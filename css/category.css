@@ -27,3 +27,8 @@ body {
 .form-control {
     margin-top: 10px;
 }
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}

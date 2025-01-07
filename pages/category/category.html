@@ -12,30 +12,78 @@
         <h1>Categoria</h1>
 
         <!-- Botão para adicionar nova categoria -->
-        <div class="mb-3">
-            <a href="categoryAdd.html" class="btn btn-primary">Adicionar Nova Categoria</a>
+        <div class="mb-3 row">
+            <div class="col-sm-3">
+                <a href="categoryAdd.html" class="btn btn-primary btn-sm">
+                    Adicionar Nova Categoria
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus iconText" viewBox="0 0 16 16">
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                    </svg>
+                </a>
+            </div>
         </div>
 
-        <p id="loadingMessage">Carregando...</p>
+        <div class="mb-3 row">
+            <p id="loadingMessage">Carregando...</p>
+        </div>
 
-        <table class="table table-striped table-bordered d-none" id="categoriesTable">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Icone</th>
-                    <th>Descrição</th>
-                    <th>Data da Criação</th>
-                    <th>Data da Atualização</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="categoriesBody"></tbody>
-        </table>
+        <div class="mb-3 row">
+            <table class="table table-striped table-bordered d-none" id="categoriesTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Icone</th>
+                        <th>Descrição</th>
+                        <th>Data da Criação</th>
+                        <th>Data da Atualização</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="categoriesBody" class="text-center"></tbody>
+            </table>
+        </div>
     </div>
 
+        <!-- Modal de Confirmação -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja excluir esta categoria?
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row w-100 d-flex justify-content-center">
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" id="confirmNotDeleteBtn">
+                                    Não
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x iconText" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteBtn">
+                                    Sim, Excluir
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check iconText" viewBox="0 0 16 16">
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     <script>
+        let categoryIdToDelete = null;
+
         async function fetchCategories() {
             const url = "https://localhost:44337/api/Categories";
             const loadingMessage = document.getElementById("loadingMessage");
@@ -52,7 +100,7 @@
                 const categories = await response.json();
 
                 if (categories.length === 0) {
-                    loadingMessage.innerHTML = "<p class='text-warning'>Nenhum categoria encontrada.</p>";
+                    loadingMessage.innerHTML = "<p class='text-warning'>Nenhuma categoria foi encontrada.</p>";
                     return;
                 }
 
@@ -69,7 +117,25 @@
                             <td>${new Date(category.dateUpdate).toLocaleDateString("pt-BR")}</td>
                             <td>${category.status ? 'Ativo' : 'Inativo'}</td>
                             <td>
-                                <a href="categoryUpdate.html?id=${category.id}" class="btn btn-warning btn-sm">Atualizar</a>
+                                <div class="row justify-content-md-center">
+                                    <div class="col-sm-6">
+                                        <a href="categoryUpdate.html?id=${category.id}" class="btn btn-warning btn-sm">
+                                            Atualizar
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise iconText" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                                <div class="col-sm-5">
+                                        <a href="#" onclick="deleteCategory(${category.id})" class="btn btn-danger btn-sm">
+                                            Excluir
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x iconText" viewBox="0 0 16 16">
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     `).join("");
@@ -84,6 +150,30 @@
         }
 
         fetchCategories();
+
+        function deleteCategory(id) {
+            categoryIdToDelete = id;
+            const modal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"));
+            modal.show();
+        }
+
+        document.getElementById("confirmDeleteBtn").addEventListener("click", async function () {
+            if (userIdToDelete) {
+                try {
+                    const response = await fetch(`https://localhost:44337/api/Categories/${userIdToDelete}`, { method: "DELETE" });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
+                    }
+
+                    alert("Categoria foi excluído com sucesso!");
+                    window.location.reload();
+                } catch (error) {
+                    alert(`Erro ao excluir: ${error.message}`);
+                }
+            }
+        });
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>

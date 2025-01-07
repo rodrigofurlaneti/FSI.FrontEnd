@@ -31,3 +31,8 @@ body {
 .iconText {
     padding-left: 0.5vh;
 }
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}

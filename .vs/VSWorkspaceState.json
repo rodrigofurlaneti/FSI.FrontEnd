@@ -1,8 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\img"
+    "\\icon",
+    "\\pages",
+    "\\pages\\category",
+    "\\pages\\profile",
+    "\\pages\\user"
   ],
-  "SelectedNode": "\\img\\fundo.jpg",
   "PreviewInSolutionExplorer": false
 }
