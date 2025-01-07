@@ -1,5 +1,5 @@
 body {
-    background-image: url('../img/fundo.jpg');
+    background-image: url('../img/dashboard.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -26,8 +26,4 @@ body {
 
 .form-control {
     margin-top: 10px;
-}
-
-.iconText {
-    padding-right: 0.5vh;
 }

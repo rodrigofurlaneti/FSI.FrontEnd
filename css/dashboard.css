@@ -59,3 +59,7 @@ iframe {
     height: 100vh;
     border: none;
 }
+
+.iconText {
+    padding-right: 0.5vh;
+}
