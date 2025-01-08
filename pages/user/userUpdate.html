@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atualizar Usuário</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="../../css/user.css">
 </head>
 <body>
     <div class="container mt-4 text-center">
@@ -17,30 +16,29 @@
             <div class="row justify-content-md-center">
                 <label for="username" class="col-sm-2 col-form-label">Username</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control form-control-sm" id="username" name="username" placeholder="Username" required>
+                    <input type="text" class="form-control form-control-sm" id="username" name="username" required>
                 </div>
             </div>
 
             <div class="row justify-content-md-center">
                 <label for="email" class="col-sm-2 col-form-label">Email</label>
                 <div class="col-sm-4">
-                    <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="Email" required>
+                    <input type="email" class="form-control form-control-sm" id="email" name="email" required>
                 </div>
             </div>
 
             <div class="row justify-content-md-center">
-                <label for="password" class="col-sm-2 col-form-label">Senha</label>
+                <label for="password" class="col-sm-2 col-form-label">Nova Senha</label>
                 <div class="col-sm-4">
-                    <input type="password" class="form-control form-control-sm" id="password" name="password" placeholder="Password" required>
+                    <input type="password" class="form-control form-control-sm" id="password" name="password" placeholder="Deixe em branco para manter a senha atual">
                 </div>
             </div>
 
-            <div class="row justify-content-md-center" style="padding-top: 1vh;">
+            <div class="row justify-content-md-center">
                 <label for="idProfile" class="col-sm-2 col-form-label">Perfil</label>
                 <div class="col-sm-4">
-                    <select class="form-select form-select-sm" id="idProfile" required>
-                        <option value="1">Administrador</option>
-                        <option value="2">Investidor</option>
+                    <select class="form-select form-select-sm" id="idProfile" name="idProfile" required>
+                        <option value="">Carregando...</option>
                     </select>
                 </div>
             </div>
@@ -55,37 +53,45 @@
                 </div>
             </div>
 
-                <div class="row justify-content-md-center">
-
-                    <div class="col-sm-2">
-                        <a href="user.html" class="btn btn-secondary btn-sm">
-                            Voltar
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left iconText" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5" />
-                            </svg>
-                        </a>
-                    </div>
-
-                    <div class="col-sm-2">
-                        <button type="submit" class="btn btn-success btn-sm">
-                            Salvar
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-down iconText" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1z" />
-                                <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
-                            </svg>
-                        </button>
-                    </div>
-
+            <div class="row justify-content-md-center mt-3">
+                <div class="col-sm-2">
+                    <a href="user.html" class="btn btn-secondary btn-sm">Voltar</a>
                 </div>
-
-</form>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-success btn-sm">Salvar</button>
+                </div>
+            </div>
+        </form>
     </div>
 
     <script>
         const apiUrl = "https://localhost:44337/api/Users";
+        const profilesApiUrl = "https://localhost:44337/api/Profiles"; // API de Perfis
         const urlParams = new URLSearchParams(window.location.search);
         const userId = urlParams.get("id");
 
+        // Função para carregar os perfis dinamicamente
+        async function loadProfiles() {
+            const profileSelect = document.getElementById("idProfile");
+
+            try {
+                const response = await fetch(profilesApiUrl);
+                if (!response.ok) throw new Error("Erro ao carregar perfis.");
+
+                const profiles = await response.json();
+                profileSelect.innerHTML = `<option value="">Selecione um perfil</option>`;
+                
+                profiles.forEach(profile => {
+                    profileSelect.innerHTML += `<option value="${profile.id}">${profile.name}</option>`;
+                });
+
+            } catch (error) {
+                profileSelect.innerHTML = `<option value="">Erro ao carregar perfis</option>`;
+                console.error(error);
+            }
+        }
+
+        // Função para carregar os dados do usuário
         async function loadUserData() {
             if (!userId) {
                 alert("ID do usuário não encontrado!");
@@ -95,33 +101,40 @@
 
             try {
                 const response = await fetch(`${apiUrl}/${userId}`);
-                if (!response.ok) {
-                    throw new Error("Erro ao carregar usuário.");
-                }
+                if (!response.ok) throw new Error("Erro ao carregar usuário.");
 
                 const user = await response.json();
                 document.getElementById("userId").value = user.id;
                 document.getElementById("username").value = user.username;
-                document.getElementById("password").value = user.password;
                 document.getElementById("email").value = user.email;
+                document.getElementById("status").value = user.status.toString();
+
+                // Aguarda o carregamento dos perfis antes de selecionar o correto
+                await loadProfiles();
                 document.getElementById("idProfile").value = user.idProfile;
-                document.getElementById("status").value = user.status;
+
             } catch (error) {
                 alert("Erro ao carregar os dados: " + error.message);
             }
         }
 
+        // Função para atualizar o usuário
         document.getElementById("updateUserForm").addEventListener("submit", async function (event) {
             event.preventDefault();
 
+            const passwordField = document.getElementById("password");
             const updatedUser = {
                 id: document.getElementById("userId").value,
                 username: document.getElementById("username").value,
                 email: document.getElementById("email").value,
-                password: document.getElementById("password").value,
                 idProfile: parseInt(document.getElementById("idProfile").value),
                 status: document.getElementById("status").value === "true"
             };
+
+            // Apenas incluir a senha se foi preenchida
+            if (passwordField.value.trim()) {
+                updatedUser.password = passwordField.value;
+            }
 
             try {
                 const response = await fetch(`${apiUrl}/${userId}`, {
@@ -130,9 +143,7 @@
                     body: JSON.stringify(updatedUser)
                 });
 
-                if (!response.ok) {
-                    throw new Error("Erro ao atualizar usuário.");
-                }
+                if (!response.ok) throw new Error("Erro ao atualizar usuário.");
 
                 alert("Usuário atualizado com sucesso!");
                 window.location.href = "user.html";
