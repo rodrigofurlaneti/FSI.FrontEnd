@@ -1,11 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\icon",
+    "\\css",
     "\\pages",
-    "\\pages\\category",
-    "\\pages\\profile",
-    "\\pages\\user"
+    "\\pages\\order",
+    "\\pages\\product"
   ],
+  "SelectedNode": "\\pages\\order\\orderUpdate.html",
   "PreviewInSolutionExplorer": false
 }
