@@ -6,6 +6,7 @@
     <title>Pedido</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../../css/order.css">
+    <script src="../../routes/route.js"></script>
 </head>
 <body>
     <div class="container mt-4">
@@ -98,7 +99,7 @@
         let orderIdToDelete = null;
 
         async function fetchOrders() {
-            const url = "https://localhost:44337/api/Orders";
+            const url = urlBaseApiOrder;
             const loadingMessage = document.getElementById("loadingMessage");
             const ordersTable = document.getElementById("ordersTable");
             const ordersBody = document.getElementById("ordersBody");
@@ -118,13 +119,13 @@
                 }
 
                 // Criar um array de promessas para buscar os dados adicionais
-                const commandPromises = orders.map(async (order) => {
+                const orderPromises = orders.map(async (order) => {
                     try {
-                        const commandResponse = await fetch(`https://localhost:44337/api/Commands/${order.idCommand}`);
+                        const commandResponse = await fetch(`${urlBaseApiCommand}/${order.idCommand}`);
                         const commandData = await commandResponse.json();
-                        const userResponse = await fetch(`https://localhost:44337/api/Users/${commandData.idUser}`);
+                        const userResponse = await fetch(`${urlBaseApiUser}/${commandData.idUser}`);
                         const userData = await userResponse.json();
-                        const productResponse = await fetch(`https://localhost:44337/api/Products/${order.idProduct}`);
+                        const productResponse = await fetch(`${urlBaseApiProduct}/${order.idProduct}`);
                         const productData = await productResponse.json();
 
                         return { 
@@ -139,7 +140,7 @@
                 });
 
                 // Aguardar todas as requisições de usuários
-                const ordersWithDetails = await Promise.all(commandPromises);
+                const ordersWithDetails = await Promise.all(orderPromises);
 
                 // Gerar as linhas da tabela
                 ordersBody.innerHTML = ordersWithDetails.map(order => `
@@ -201,7 +202,7 @@
         document.getElementById("confirmDeleteBtn").addEventListener("click", async function () {
             if (orderIdToDelete) {
                 try {
-                    const response = await fetch(`https://localhost:44337/api/Orders/${orderIdToDelete}`, { method: "DELETE" });
+                    const response = await fetch(`${urlBaseApiOrder}/${orderIdToDelete}`, { method: "DELETE" });
 
                     if (!response.ok) {
                         throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
