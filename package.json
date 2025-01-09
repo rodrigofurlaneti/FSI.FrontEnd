@@ -1,0 +1,27 @@
+{
+  "name": "fsi.frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodrigofurlaneti/FSI.FrontEnd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rodrigofurlaneti/FSI.FrontEnd/issues"
+  },
+  "homepage": "https://github.com/rodrigofurlaneti/FSI.FrontEnd#readme",
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}

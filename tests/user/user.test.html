@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes com Jest</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jest/29.6.3/jest.min.js"></script>
+</head>
+<body>
+    <h1>Testes de JavaScript com Jest</h1>
+    <h1>User</h1>
+    <script>
+        const { test, expect } = jest;
+
+        function soma(a, b) {
+            return a + b;
+        }
+
+        test("Soma de 2 + 3 deve ser 5", () => {
+            expect(soma(2, 3)).toBe(5);
+        });
+
+        console.log("Todos os testes foram executados!");
+    </script>
+</body>
+</html>
