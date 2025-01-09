@@ -1,6 +1,6 @@
 async function loadProfiles() {
     try {
-        const response = await fetch(urlBaseApiProfile);
+        const response = await fetch('https://localhost:44337/api/Profiles');
 
         if (!response.ok) {
             throw new Error(`Erro ao carregar perfis: ${response.status} ${response.statusText}`);
@@ -24,39 +24,33 @@ async function loadProfiles() {
     }
 }
 
-if (typeof module !== "undefined") {
-    module.exports = { loadProfiles };
-}
-
-// Apenas executa no navegador
-if (typeof window !== "undefined") {
-    document.addEventListener("DOMContentLoaded", loadProfiles);
-}
-
-// Apenas executa no navegador
-if (typeof window !== "undefined") {
-    document.addEventListener("DOMContentLoaded", loadProfiles);
-}
-
-document.getElementById("userForm").addEventListener("submit", async function(event) {
+// Função separada para facilitar os testes unitários
+async function submitUserForm(event) {
     event.preventDefault();
+
+    const idProfileValue = document.getElementById("idProfile").value;
+    console.log("🔹 idProfile:", idProfileValue);
 
     const userData = {
         username: document.getElementById("username").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
-        idProfile: parseInt(document.getElementById("idProfile").value),
+        idProfile: parseInt(idProfileValue),
         dateInsert: new Date().toISOString(),
         dateUpdate: new Date().toISOString(),
         status: true
     };
 
+    console.log("🔹 userData:", userData);
+
     try {
-        const response = await fetch(urlBaseApiUser, {
+        const response = await fetch('https://localhost:44337/api/Users', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData)
         });
+
+        console.log("✅ fetch foi chamado!");
 
         if (!response.ok) {
             throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
@@ -67,12 +61,24 @@ document.getElementById("userForm").addEventListener("submit", async function(ev
         setTimeout(() => { window.location.href = "user.html"; }, 2000);
 
     } catch (error) {
-        document.getElementById("message").innerHTML = `<p class='text-danger'>Erro: ${error.message}</p>`;
+        console.error("❌ Erro ao enviar formulário:", error);
+        document.getElementById("message").innerHTML = `<p class='text-danger'>Erro: ${error.message} Erro: Erro na API</p>`;
     }
-});
+}
 
+// Garante que o código só execute no navegador
+if (typeof window !== "undefined") {
+    document.addEventListener("DOMContentLoaded", () => {
+        loadProfiles();
 
+        const form = document.getElementById("userForm");
+        if (form) {
+            form.addEventListener("submit", submitUserForm);
+        }
+    });
+}
 
-
-
-
+// Exporta para testes unitários
+if (typeof module !== "undefined") {
+    module.exports = { loadProfiles, submitUserForm };
+}
